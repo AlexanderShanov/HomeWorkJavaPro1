@@ -31,6 +31,7 @@ public class AccountServiceImpl implements AccountService {
 
     @Override
     public List<Account> getAccounts() {
+
         return iterableToList(accountDao.findAll());
     }
 
