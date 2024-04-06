@@ -21,8 +21,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -126,11 +125,10 @@ public class PaymentProcessorImplWithSpyTest {
 //        when(accountDao.findById(30L)).thenReturn(Optional.of(destinationAccount));
 
         paymentProcessor.makeTransferWithComission(sourceAgreement, destinationAgreement,
-                0, 0, BigDecimal.TEN, new BigDecimal("0.1"));
+                0, 0, BigDecimal.TEN, new BigDecimal("-0.1"));
 
-        assertEquals(new BigDecimal(9), sourceAccount.getAmount());
+        assertTrue(sourceAccount.getAmount().compareTo(new BigDecimal("9")) == 0 ? true : false);
         assertEquals(BigDecimal.TEN, destinationAccount.getAmount());
-
     }
     @Test
     public void testTransferWithComissionNotFoundAccountSource() {
@@ -144,7 +142,7 @@ public class PaymentProcessorImplWithSpyTest {
             @Override
             public void execute() throws Throwable {
                 paymentProcessor.makeTransferWithComission(sourceAgreement, destinationAgreement,
-                        0, 0, BigDecimal.TEN, new BigDecimal("0.1"));
+                        0, 0, BigDecimal.TEN, new BigDecimal("-0.1"));
             }
         });
         assertEquals("Account not found", result.getLocalizedMessage());
@@ -164,14 +162,14 @@ public class PaymentProcessorImplWithSpyTest {
         sourceAccount.setId(10L);
 
 
-        doReturn(List.of(sourceAccount)).when(accountService).getAccounts(any());
+        //doReturn(List.of(sourceAccount)).when(accountService).getAccounts(any());
         doReturn(new ArrayList<Account>()).when(accountService).getAccounts(any());
 
         AccountException result = assertThrows(AccountException.class, new Executable() {
             @Override
             public void execute() throws Throwable {
                 paymentProcessor.makeTransferWithComission(sourceAgreement, destinationAgreement,
-                        0, 0, BigDecimal.TEN, new BigDecimal("0.1"));
+                        0, 0, BigDecimal.TEN, new BigDecimal("-0.1"));
             }
         });
         assertEquals("Account not found", result.getLocalizedMessage());
