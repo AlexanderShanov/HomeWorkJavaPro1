@@ -2,5 +2,4 @@
 build/
 !gradle/wrapper/gradle-wrapper.jar
 .idea/
-
 otus-unittests-2/build/
